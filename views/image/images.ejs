@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        .jumbotron{
+                        /*same color as shopify's theme*/
+                        background-color:rgb(150,191,71) !important;
+
+
+        }
+    </style>
+    <title>ImageRepo</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">ImageRepo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="nav navbar-nav navbar-right">
+            <%if(!currentUser){%>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Sign Up</a></li>
+            <%}else{%>
+                <li ><a href="#">Signed in as <%= currentUser.username%></a></li>
+                <li> <span>   </span>  </li>
+                <li><a href="/logout">  Logout</a></li>
+            <%}%>
+        </ul>
+
+    </div>
+</nav>
+
+
+<div class="container">
+    <header class="jumbotron">
+        <div class="container">
+
+            <h1>ImageRepo</h1>
+
+            <p>
+                <a href="/images/create" class="btn btn-success">Upload Images!</a>
+            </p>
+
+        </div>
+
+    </header>
+
+    <div class="row">
+
+    </div>
+
+
+    <div class="row text-center" style="display: flex; flex-wrap: wrap; ">
+        <% images.forEach(function(image) { %>
+        <div class = "col-md-3 col-sm-6">
+            <div class="card">
+                <img class="img-fluid max-width" src="data:image/<%=image.img.contentType%>;base64,
+                     <%=image.img.data.toString('base64')%>">
+                <div class="option">
+                    <h5><%= image.name %></h5>
+                    <h6>$<%= image.price%></h6>
+                    <%if(!(currentUser && image.author.id.equals(currentUser._id))){%>
+                    <p><button class="btn btn-primary" href="" disabled >Uploaded by <%=image.author.username%></button></p>
+                    <%}%>
+                    <%if(currentUser && image.author.id.equals(currentUser._id)){%>
+                    <form action="/images/<%=image._id%>?_method=DELETE" method="post">
+                        <button class="btn btn-danger" >Delete your Pic ;(</button>
+                    </form>
+
+                    <%}%>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+
+
+
+
+</div>
+
+
+</body>
+</html>
